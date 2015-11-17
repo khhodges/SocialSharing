@@ -1,5 +1,6 @@
 {
   "CorePlugins": [
+    "nl.x-services.plugins.socialsharing@5.0.6",
     "org.apache.cordova.battery-status",
     "org.apache.cordova.camera",
     "org.apache.cordova.contacts",

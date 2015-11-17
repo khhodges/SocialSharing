@@ -1,0 +1,80 @@
+<html ng-app="order-app">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2, user-scalable=yes">
+        <title>AppBuilder + Ionic</title>
+        <script src="cordova.js"></script>
+        <link href="http://code.ionicframework.com/1.0.0-beta.11/css/ionic.css" rel="stylesheet" />
+        <script src="http://code.ionicframework.com/1.0.0-beta.11/js/ionic.bundle.js"></script>
+        <script>
+            angular.module("order-app", [ "ionic" ])
+                .controller("OrderListController", function($scope) {
+                    $scope.listOfItems = [
+                        "Fish and Chips", "Dozen Oysters", "Bacon-Cheeseburger, Swiss", "House Salad, Ranch on the side", "BLT", "Bass Ale",
+                        "Red Zinfandel Wine", "Pino Gregio Wine" 
+                    ];
+                    
+                    $scope.removeGrocery = function(listedItem) {
+                        $scope.listOfItems.splice(
+                            $scope.listOfItems.indexOf(listedItem), 1);
+                    };
+                    $scope.onItemDelete = function(listedItem) {
+                        var message = "Are you sure you want to delete " + listedItem + "?";
+                        navigator.notification.confirm(message, function(index) {
+                            if (index === 1) {
+                                $scope.removeGrocery(listedItem);
+                                $scope.$apply();
+                            }
+                        });
+                    }
+                    $scope.onShare = function() {
+                        window.plugins.socialsharing.share("the message", "subject", "http://www.telerik.com/sfimages/default-source/productsimages/mobilecraft/telerik-platform.png", "http://www.telerik.com", $scope.onSuccess, $scope.onError);
+                    };  
+                    // callbacks
+                    $scope.onSuccess = function(msg) {
+                        console.log('SocialSharing success: ' + msg);
+                    },
+            
+                    $scope.onError = function(msg) {
+                        alert('SocialSharing error: ' + msg);
+                    }
+                    $scope.shouldShowDelete = false;
+                    $scope.shouldShowReorder = false;
+                    $scope.listCanSwipe = true;
+                    
+                    $scope.addToOrder = function(listedItem) {
+                        alert('Add to Order: ' + listedItem);
+                    };
+                    
+                    $scope.removeFromOrder = function(listedItem) {
+                        alert('Remove this Item: ' + listedItem);
+                    };
+  
+                    $scope.moveItem = function(listedItem, fromIndex, toIndex) {
+                        $scope.items.splice(fromIndex, 1);
+                        $scope.items.splice(toIndex, 0, listedItem);
+                    };
+                });
+        </script>
+    </head>
+    <body ng-controller="OrderListController" >
+        <ion-header-bar class="bar-positive">
+            <h1 class="title">Your Favorites</h1>
+            <div class="buttons">
+                <button class="button" ng-click="onShare()">Order</button>
+            </div>
+        </ion-header-bar>
+        <ion-content>
+            <ion-list show-delete="shouldShowDelete" show-reorder="shouldShowReorder" can-swipe="listCanSwipe" >
+                <ion-item ng-repeat="listedItem in listOfItems" item="listedItem" class="item-thumbnail-left" href="http://muddywatersrestaurant.com/wp-content/uploads/2014/12/BURGER-BACON-CHEESE-2-300x199.jpg">
+                    <ion-delete-button class="ion-plus-circled" ng-click="onItemDelete(listedItem)"></ion-delete-button>
+                    <img ng-src="http://muddywatersrestaurant.com/wp-content/uploads/2014/12/BURGER-BACON-CHEESE-2-300x199.jpg">
+                    <h2>{{listedItem}}</h2>
+                    <ion-option-button class="button-balanced" ng-click="addToOrder(item)">+</ion-option-button>
+                    <ion-option-button class="button-assertive">-</ion-option-button>
+                    <ion-option-button class="button-royal">Share</ion-option-button>
+                </ion-item>
+            </ion-list>
+        </ion-content>
+    </body>
+</html>
